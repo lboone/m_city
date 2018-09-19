@@ -16,7 +16,7 @@ export const CityLogo = props => {
   );
   if (props.link) {
     return (
-      <Link to={props.link} className="link_logo">
+      <Link to={props.linkTo} className="link_logo">
         {template}
       </Link>
     );
