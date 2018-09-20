@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { firebaseMatches } from "../../../firebase";
-import { firebaseLooper, reverseArray } from "../../../utils/misc";
+import { firebaseLooper, firebaseMatches } from "../../../firebase";
+import { reverseArray } from "../../../utils/misc";
 import Slide from "react-reveal/Slide";
 
 import { Block } from "../../ui/Elements";

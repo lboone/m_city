@@ -4,11 +4,13 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import AdminLayout from "../../../Hoc/AdminLayout";
 import FormField from "../../ui/FormField";
 import { validate } from "../../../utils/validation";
+import Fileuploader from "../../ui/Fileuploader";
+
 import {
   firebasePlayers,
   getPlayerById,
-  firebaseDB,
-  firebase
+  getPlayerImageURL,
+  firebaseDB
 } from "../../../firebase";
 
 class AddEditPlayer extends Component {
@@ -77,7 +79,7 @@ class AddEditPlayer extends Component {
           type: "select",
           options: [
             { key: "Keeper", value: "Keeper" },
-            { key: "Defense", value: "Defense" },
+            { key: "Defence", value: "Defence" },
             { key: "Midfield", value: "Midfield" },
             { key: "Striker", value: "Striker" }
           ]
@@ -88,13 +90,26 @@ class AddEditPlayer extends Component {
         valid: false,
         validationMessage: "",
         showLabel: true
+      },
+      image: {
+        element: "image",
+        value: "",
+        validation: {
+          require: true
+        },
+        valid: true
       }
     }
   };
-  updateForm(element) {
+  updateForm(element, content = "") {
     const newFormData = { ...this.state.formData };
     const newElement = { ...newFormData[element.id] };
-    newElement.value = element.event.target.value;
+
+    if (content === "") {
+      newElement.value = element.event.target.value;
+    } else {
+      newElement.value = content;
+    }
 
     let validData = validate(newElement);
 
@@ -108,7 +123,7 @@ class AddEditPlayer extends Component {
       formData: newFormData
     });
   }
-  updateFields(player, positionOptions, positions, type, playerId) {
+  updateFields(player, playerId, type, defaultImg) {
     const newFormData = {
       ...this.state.formData
     };
@@ -122,6 +137,7 @@ class AddEditPlayer extends Component {
     this.setState({
       playerId,
       formType: type,
+      defaultImg,
       formData: newFormData,
       isLoading: false
     });
@@ -182,19 +198,47 @@ class AddEditPlayer extends Component {
       this.setState({
         formType: "Add Player"
       });
-      console.log("No Player");
     } else {
       getPlayerById(playerId).then(snapshot => {
-        const player = snapshot.val();
         this.setState({
-          formType: "Edit Player"
+          isLoading: true
         });
+        const player = snapshot.val();
+
+        getPlayerImageURL(player.image)
+          .then(url => {
+            this.updateFields(player, playerId, "Edit Player", url);
+          })
+          .catch(() => {
+            this.setState({
+              defaultImg: "",
+              isLoading: false
+            });
+            this.updateFields(player, playerId, "Edit Player", null);
+          });
       });
     }
     this.setState({
       isLoading: false
     });
   }
+  resetImage = () => {
+    const newFormData = { ...this.state.formData };
+    newFormData["image"].value = "";
+    newFormData["image"].valid = false;
+    this.setState({
+      defaultImg: "",
+      formData: newFormData
+    });
+  };
+  storeFilename = filename => {
+    this.updateForm(
+      {
+        id: "image"
+      },
+      filename
+    );
+  };
   render() {
     return (
       <AdminLayout>
@@ -208,6 +252,14 @@ class AddEditPlayer extends Component {
               <h2>{this.state.formType}</h2>
               <div>
                 <form onSubmit={event => this.submitForm(event)}>
+                  <Fileuploader
+                    dir="players"
+                    tag={"Player Image"}
+                    defaultImg={this.state.defaultImg}
+                    defaultImgName={this.state.formData.image.value}
+                    resetImage={() => this.resetImage()}
+                    filename={filename => this.storeFilename(filename)}
+                  />
                   <FormField
                     id={"name"}
                     formData={this.state.formData.name}

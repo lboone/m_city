@@ -17,11 +17,27 @@ firebase.initializeApp(config);
 
 const firebaseDB = firebase.database();
 const firebaseAuth = firebase.auth();
+const firebasePositions = firebaseDB.ref("positions");
 const firebasePromotions = firebaseDB.ref("promotions");
 const firebaseMatches = firebaseDB.ref("matches");
 const firebasePlayers = firebaseDB.ref("players");
 const firebaseTeams = firebaseDB.ref("teams");
 
+const firebaseLooper = snapshot => {
+  const data = [];
+
+  snapshot.forEach(childSnapshot => {
+    data.push({
+      ...childSnapshot.val(),
+      id: childSnapshot.key
+    });
+  });
+  return data;
+};
+
+const getAllPositions = () => {
+  return firebasePositions.once("value");
+};
 const getAllPromotions = () => {
   return firebasePromotions.once("value");
 };
@@ -39,11 +55,20 @@ const getAllMatches = () => {
 const getPlayerById = playerId => {
   return firebaseDB.ref(`players/${playerId}`).once("value");
 };
+
+const getPlayerImageURL = img => {
+  return firebase
+    .storage()
+    .ref("players")
+    .child(img)
+    .getDownloadURL();
+};
 const getMatchById = matchId => {
   return firebaseDB.ref(`matches/${matchId}`).once("value");
 };
 
 export {
+  firebaseLooper,
   firebase,
   firebaseAuth,
   firebaseDB,
@@ -51,10 +76,12 @@ export {
   firebaseMatches,
   firebasePlayers,
   firebaseTeams,
+  getAllPositions,
   getAllPromotions,
   getAllPlayers,
   getAllTeams,
   getAllMatches,
   getPlayerById,
+  getPlayerImageURL,
   getMatchById
 };

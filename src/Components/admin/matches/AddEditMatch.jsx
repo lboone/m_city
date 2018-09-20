@@ -5,12 +5,12 @@ import AdminLayout from "../../../Hoc/AdminLayout";
 import FormField from "../../ui/FormField";
 import { validate } from "../../../utils/validation";
 import {
+  firebaseLooper,
   firebaseMatches,
   getAllTeams,
   getMatchById,
   firebaseDB
 } from "../../../firebase";
-import { firebaseLooper } from "../../../utils/misc";
 
 class AddEditMatch extends Component {
   state = {

@@ -14,6 +14,9 @@ import Matches from "./Components/admin/matches/Matches";
 import AddEditMatch from "./Components/admin/matches/AddEditMatch";
 import Dashboard from "./Components/admin/Dashboard";
 
+import TheTeam from "./Components/the_team/TheTeam";
+import TheMatches from "./Components/the_matches/TheMatches";
+
 const Routes = props => {
   return (
     <Layout>
@@ -74,6 +77,20 @@ const Routes = props => {
           exact
           component={Home}
           path="/"
+        />
+        <PublicRoutes
+          {...props}
+          restricted={false}
+          exact
+          component={TheTeam}
+          path="/the_team"
+        />
+        <PublicRoutes
+          {...props}
+          restricted={false}
+          exact
+          component={TheMatches}
+          path="/the_matches"
         />
       </Switch>
     </Layout>

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { getAllPlayers } from "../../../firebase";
+import { firebaseLooper, getAllPlayers } from "../../../firebase";
 import AdminLayout from "../../../Hoc/AdminLayout";
-import { firebaseLooper, reverseArray } from "../../../utils/misc";
+import { reverseArray } from "../../../utils/misc";
 
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
