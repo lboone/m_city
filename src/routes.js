@@ -16,6 +16,7 @@ import Dashboard from "./Components/admin/Dashboard";
 
 import TheTeam from "./Components/the_team/TheTeam";
 import TheMatches from "./Components/the_matches/TheMatches";
+import NotFound from "./Components/ui/NotFound";
 
 const Routes = props => {
   return (
@@ -91,6 +92,13 @@ const Routes = props => {
           exact
           component={TheMatches}
           path="/the_matches"
+        />
+        <PublicRoutes
+          {...props}
+          restricted={false}
+          exact
+          component={NotFound}
+          path=""
         />
       </Switch>
     </Layout>
